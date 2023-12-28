@@ -1,20 +1,59 @@
-import { signOut } from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import React, { useEffect, useState } from "react";
 import { auth } from "../utils/Firebase";
 import { useNavigate } from "react-router-dom";
-import { Provider, useSelector } from "react-redux";
-import AppStore from "../utils/AppStore";
+import { useDispatch, useSelector } from "react-redux";
+import { addUser, removeUser } from "../utils/userSlice";
 
 const Header = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const user = useSelector((store) => store.user);
-  console.log(user);
+
+  const handleSignOut = () => {
+    signOut(auth)
+      .then(() => {
+        // Sign-out successful.
+        //localStorage.clear();
+        //navigate("/");
+      })
+      .catch((error) => {
+        // An error happened.
+        navigate("/error");
+      });
+  };
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in, see docs for a list of available properties
+        // https://firebase.google.com/docs/reference/js/auth.user
+        const { uid, email, displayName } = user;
+        dispatch(
+          addUser({
+            uid: uid,
+            email: email,
+            displayName: displayName,
+          })
+        );
+        navigate("/browse");
+        // ...
+      } else {
+        // User is signed out
+        // ...
+        dispatch(removeUser());
+        localStorage.clear();
+        navigate("/");
+      }
+    });
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         // Fetch data and update Redux store
+
         if (user && user.displayName) {
           const displayName = await user.displayName;
           localStorage.setItem("displayName", displayName);
@@ -30,17 +69,6 @@ const Header = () => {
 
   console.log(name);
 
-  const handleSignOut = () => {
-    signOut(auth)
-      .then(() => {
-        // Sign-out successful.
-        localStorage.clear();
-        navigate("/");
-      })
-      .catch((error) => {
-        // An error happened.
-      });
-  };
   return (
     <div className="absolute w-screen h-auto px-2 py-2 bg-gradient-to-b from-black z-10 flex justify-between">
       <img

@@ -1,14 +1,12 @@
 import React, { useRef, useState } from "react";
 import Header from "./Header";
 import { validateData } from "../utils/Validate";
-import { motion } from "framer-motion";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   updateProfile,
 } from "firebase/auth";
 import { auth } from "../utils/Firebase";
-import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
 
@@ -24,8 +22,6 @@ const Login = () => {
   const password = useRef(null);
   const displayName = useRef(null);
   const dispatch = useDispatch();
-
-  const navigate = useNavigate();
 
   const handleFormClick = () => {
     //validate data
@@ -67,8 +63,6 @@ const Login = () => {
               // An error occurred
               // ...
             });
-          console.log(user);
-          navigate("/browse");
           // ...
         })
         .catch((error) => {
@@ -87,7 +81,6 @@ const Login = () => {
         .then((userCredential) => {
           // Signed in
           const user = userCredential.user;
-          navigate("/browse");
           // ...
         })
         .catch((error) => {
@@ -107,15 +100,7 @@ const Login = () => {
           alt="demo"
         />
 
-        <motion.form
-          drag
-          dragElastic={0.5} // Adjust the elasticity as needed
-          dragConstraints={{
-            left: -500,
-            right: 500,
-            top: -200,
-            bottom: 200,
-          }}
+        <form
           onSubmit={(e) => e.preventDefault()}
           className="absolute w-3/12 p-10 bg-black bg-opacity-85 my-36 mx-auto left-0 right-0 rounded-lg text-white "
         >
@@ -157,7 +142,7 @@ const Login = () => {
               ? "New to Netflix? SignUp now!"
               : "Already Registered. SignIn."}
           </p>
-        </motion.form>
+        </form>
       </div>
     </div>
   );
