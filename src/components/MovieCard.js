@@ -1,10 +1,15 @@
 import React from "react";
 import { CDN_MOVIES } from "../utils/constants";
 
-const MovieCard = ({ posterPath }) => {
+const MovieCard = ({ posterPath, name }) => {
   return (
     <>
-      <img className="px-2" src={CDN_MOVIES + posterPath} alt="demo"></img>
+      <img
+        className=" hover:opacity-90 "
+        src={CDN_MOVIES + posterPath}
+        alt="demo"
+        title={name}
+      ></img>
     </>
   );
 };

@@ -13,6 +13,7 @@ const MovieList = ({ title, movies }) => {
                 key={movie.id}
                 className="min-w-full"
                 posterPath={movie.backdrop_path}
+                name={movie.original_title}
               ></MovieCard>
             ))}
         </div>
